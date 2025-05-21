@@ -1,0 +1,1135 @@
+---
+title: "Brain Health Report"
+author: " "
+#date: "`r Sys.Date()`"
+date: "2025-02-20"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,error = FALSE,message = FALSE)
+```
+
+
+## Deviation of global features: 
+#### lightblue=Male,darkred=Female,soldline=Meidan,dottedline=95%CI
+
+```{r, warning = FALSE, include = FALSE,echo=FALSE}
+#load required packages
+#install.packages('gamlss')
+rm(list=ls())
+
+#set your own directory; to avoid errors, you should copy these directories into each block (or partition) individually
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures 
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+
+setwd(datapath)
+source("100.common-variables.r")
+source("101.common-functions.r")
+
+source("ZZZ_function.R")
+source("300.variables.r")
+source("301.functions.r")
+
+
+#install.packages('gamlss')
+rm(list=ls())
+library(glmnet)
+library(dplyr);
+library(ggplot2)
+library(ggplot2)
+library(stringr)
+library(robustbase)
+library(gamlss)
+library(ggplot2)
+library(reshape2)
+
+
+source("100.common-variables.r")
+source("101.common-functions.r")
+
+source("ZZZ_function.R")
+source("300.variables.r")
+source("301.functions.r")
+
+library(raincloudplots)
+library(commonmark)
+library(ggplot2)
+#library(ggstatsplot)
+library(lmerTest)
+library(effectsize)
+library(ggrain)
+library(ggsci)
+library(ggdist)
+library(hrbrthemes)
+
+```
+
+```{r, warning = FALSE, include = FALSE,echo=FALSE}
+library(readxl)
+#read individual freesurfer-derived phenotypes and calcuate the centiles
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+
+clinical_data<-read.csv(clinicalfile);
+rownames(clinical_data)<-paste0(clinical_data$Freesufer_Path2,clinical_data$Freesufer_Path3)
+
+path <- list()
+str_lab <- 'global_and_local_feature'# change
+path[[1]]<-paste0(feature_path0,'aseg.vol.table');
+path[[2]]<-paste0(feature_path0,'lh.aparc.thickness.table');
+path[[3]]<-paste0(feature_path0,'rh.aparc.thickness.table');
+path[[4]]<-paste0(feature_path0,'lh.aparc.area.table');
+path[[5]]<-paste0(feature_path0,'rh.aparc.area.table');
+path[[6]]<-paste0(feature_path0,'lh.aparc.volume.table');
+path[[7]]<-paste0(feature_path0,'rh.aparc.volume.table');
+path[[8]]<-paste0(feature_path0,'Global_feature');
+
+
+
+
+RDSfile_all <- NULL
+for (i in 1:length(path))
+{
+  feature_path = path[[i]]
+
+  setwd(feature_path)
+  myfile <- list.files()
+  RDSfile_all0 <-
+    myfile[grep(myfile, pattern = "model.rds$")]
+  for (j in RDSfile_all0)
+  {
+    #RDSfile_all0<-paste0(feature_path,'/',RDSfile_all0);
+    RDSfile_all <- c(RDSfile_all, paste0(feature_path, '/', j))
+
+
+  }
+}
+
+
+setwd(datapath)
+#loading for Global_feature
+var <-
+  c(
+    'Global.table',
+    'aseg.vol.table',
+    'lh.aparc.volume.table',
+    'rh.aparc.volume.table',
+    'lh.aparc.thickness.table',
+    'rh.aparc.thickness.table',
+    'lh.aparc.area.table',
+    'rh.aparc.area.table'
+  )
+setwd(datapath)
+
+MRI <- data.frame(read_excel(datafile, sheet = 'Global.table'))
+rownames(MRI)<-paste0(MRI$Freesurfer_Path2,MRI$Freesurfer_Path3)
+
+ind<-intersect(rownames(clinical_data),rownames(MRI))
+
+MRI<-cbind(clinical_data[ind,],MRI[ind,])
+MRI$Site_ZZZ<-paste0(MRI$City,MRI$Center,MRI$Manufacturer)
+
+individual_name<-c("IndividualIndividual")
+
+
+all_data1_raw<- MRI[individual_name, c(7,8,9,18)]
+all_data1_centile<- MRI[individual_name, c(7,8,9,18)]
+
+ 
+
+for (sheet in var)
+  #for local feature
+{
+  setwd(datapath)
+  MRI <- data.frame(read_excel(datafile, sheet = sheet))
+  MRI<- MRI[!duplicated(paste0(MRI$Freesurfer_Path2,MRI$Freesurfer_Path3)), ]
+  rownames(MRI)<-paste0(MRI$Freesurfer_Path2,MRI$Freesurfer_Path3)
+
+  ind<-intersect(rownames(clinical_data),rownames(MRI))
+
+  MRI<-cbind(clinical_data[ind,c(1:18)],MRI[ind,])
+  MRI$Site_ZZZ<-paste0(MRI$City,MRI$Center,MRI$Manufacturer)
+
+  MRI <- MRI[c(individual_name, "Case1Case1", "Case2Case2"), ]
+
+  if (sheet == "aseg.vol.table")
+  {
+    MRI[,'cerebellum_WM']<-MRI$Left.Cerebellum.White.Matter+MRI$Right.Cerebellum.White.Matter
+    MRI[,'cerebellum_GM']<-MRI$Left.Cerebellum.Cortex+MRI$Right.Cerebellum.Cortex
+    MRI[,'cerebellum_total']<-MRI[,'cerebellum_WM']+MRI[,'cerebellum_GM'];
+    MRI[,'CC']<-MRI$CC_Anterior+MRI$CC_Central+MRI$CC_Mid_Anterior+
+      MRI$CC_Mid_Posterior+MRI$CC_Posterior
+  }
+
+  str = sheet
+
+
+
+  if (sheet == "Global.table")
+  {
+    
+     for(col in colnames(MRI)[20:37])
+    {
+      MRI[,col]<-as.numeric(MRI[,col])
+     }
+    
+    for (i in 1:dim(MRI)[1])
+    {
+      MRI[i,'mean_thickness']<-
+        (MRI[i,'lhMeanThickness']*MRI[i,'lhVertex']+
+           MRI[i,'rhMeanThickness']*MRI[i,'rhVertex'])/(MRI[i,'lhVertex']+MRI[i,'rhVertex'])
+      
+      MRI[i,'total_surface_arrea']<-MRI[i,'lh_totaISA2']+MRI[i,'rh_totaISA2'];
+    }
+    str = 'Global_feature'
+
+  }
+
+  tem_feature <- colnames(MRI)
+
+
+  all_data <- MRI
+
+  Z_data_new <- list()
+
+  Quant_data_new <- list()
+
+  
+  for (i in tem_feature[1:length(tem_feature)])
+  {
+    all_data[, 'feature'] <- all_data[, i]
+
+   
+    rdsfile<-paste0(i,'_normative_model.rds')
+    
+    if(i=='Brain.Stem'){rdsfile='BrainStem_normative_model.rds'}
+    if(i=='cerebellum_total'){rdsfile='Cerebellum_normative_model.rds'}
+    if(i=='mean_thickness'){rdsfile='Cortical_thickness_normative_model.rds'}
+    if(i=='total_surface_arrea'){rdsfile='Total_surface_area_normative_model.rds'}
+
+    rads_file<-rdsfile
+    
+
+    rads_index <- NULL
+    for (rads1 in RDSfile_all)
+    {
+      if (grepl(rads_file, rads1)) {
+        rads_index <- rads1
+      }
+    }
+
+    if (is.null(rads_index)) {
+      next
+    }
+    
+    if (!is.null(rads_index)){
+      results <- readRDS(rads_index)
+      print(paste0(rads_index, '-vs-', i))
+    }
+
+
+
+    Z_score_sum <- NULL
+
+    Quant_score_sum <- NULL
+
+    m0 <- results$m0
+    m2<- results$m2
+
+    #for mu
+
+    all_data$Sex <- as.factor(all_data$Sex)
+    all_data[2, 'Site_ZZZ'] <- 'CC'
+    all_data$Site_ZZZ <- as.factor(all_data$Site_ZZZ)
+
+
+    tem_rnd <- matrix(0, dim(all_data)[1], 1)
+
+    Model.Frame <- model.frame(formula = m2$mu.formula, data = all_data)
+
+    Model.Matrix <- model.matrix(m2$mu.formula, Model.Frame)
+    Fit.fix <-
+      matrix(m2$mu.coefficients[colnames(Model.Matrix)],
+             ncol = 1,
+             dimnames = list(colnames(Model.Matrix), 'Beta'))
+    if (!is.null(m2$mu.coefSmo[[1]]))
+    {
+      Fit.fix[length(Fit.fix)] = 0
+
+      for (iz in 1:dim(all_data)[1]) {
+        if (all_data$Site_ZZZ[iz] %in% names(m2$mu.coefSmo[[1]]$coef)) {
+          tem_rnd[iz] <-
+            m2$mu.coefSmo[[1]]$coef[as.character(all_data$Site_ZZZ[iz])]
+        } else{
+          tem_rnd[iz] <- mean(m2$mu.coefSmo[[1]]$coef)
+        }
+      }
+    } else{
+      print('no random effects for this term')
+    }
+
+
+    mu <- exp(as.vector(Model.Matrix %*% Fit.fix) + as.vector(tem_rnd))
+    #for sigma
+    tem_rnd <- matrix(0, dim(all_data)[1], 1)
+
+    Model.Frame <- model.frame(formula = m2$sigma.formula, data = all_data)
+
+    Model.Matrix <- model.matrix(m2$sigma.formula, Model.Frame)
+    Fit.fix <-
+      matrix(
+        m2$sigma.coefficients[colnames(Model.Matrix)],
+        ncol = 1,
+        dimnames = list(colnames(Model.Matrix), 'Beta')
+      )
+    if (!is.null(m2$sigma.coefSmo[[1]]))
+    {
+      Fit.fix[length(Fit.fix)] = 0
+
+      for (iz in 1:dim(all_data)[1]) {
+        if (all_data$Site_ZZZ[iz] %in% names(m2$sigma.coefSmo[[1]]$coef)) {
+          tem_rnd[iz] <-
+            m2$sigma.coefSmo[[1]]$coef[as.character(all_data$Site_ZZZ[iz])]
+        } else{
+          tem_rnd[iz] <- mean(m2$sigma.coefSmo[[1]]$coef)
+        }
+      }
+    } else{
+      print('no random effects for this term')
+    }
+
+
+
+    sigma <- exp(as.vector(Model.Matrix %*% Fit.fix) + as.vector(tem_rnd))
+
+    #sigma<-(as.vector(Model.Matrix %*% Fit.fix))
+    #for nu
+
+    Model.Frame <- model.frame(formula = m2$nu.formula, data = all_data)
+
+    Model.Matrix <- model.matrix(m2$nu.formula, Model.Frame)
+    Fit.fix <-
+      matrix(m2$nu.coefficients[colnames(Model.Matrix)],
+             ncol = 1,
+             dimnames = list(colnames(Model.Matrix), 'Beta'))
+    if (!is.null(m2$nu.coefSmo[[1]]))
+    {
+      Fit.fix[length(Fit.fix)] = 0
+
+    } else{
+      print('no random effects for this term')
+    }
+
+
+    nu <- as.vector(Model.Matrix[, colnames(Model.Matrix)[1]] * Fit.fix[1])
+
+
+
+    Z_score_sum <-
+      zzz_cent(
+        obj = m2,
+        type = c("z-scores"),
+        mu = mu,
+        sigma = sigma,
+        nu = nu,
+        xname = 'Age',
+        xvalues = all_data$Age,
+        yval = all_data$feature,
+        calibration = FALSE,
+        lpar = 3
+      )
+
+    Quant_score_sum <-
+      zzz_cent(
+        obj = m2,
+        type = c("z-scores"),
+        mu = mu,
+        sigma = sigma,
+        nu = nu,
+        xname = 'Age',
+        xvalues = all_data$Age,
+        yval = all_data$feature,
+        calibration = FALSE,
+        lpar = 3,
+        cdf = TRUE
+      )
+
+
+    Z_score_sum <- data.frame(Z_score_sum)
+
+    colnames(Z_score_sum) <- c('Z_score')
+
+
+    Quant_score_sum <- data.frame(Quant_score_sum)
+
+    colnames(Quant_score_sum) <- c('Quant_score')
+
+
+    all_data1_raw<- cbind(all_data1_raw,all_data$feature[1]);
+    colnames(all_data1_raw)[dim(all_data1_raw)[2]]<-i
+   all_data1_centile<- cbind(all_data1_centile,Quant_score_sum[1,1]);
+   colnames(all_data1_centile)[dim(all_data1_centile)[2]]<-i
+
+
+
+  }
+
+}
+
+  setwd(savepath)
+
+  write.csv(all_data1_raw,'individual_raw_data.csv')
+  write.csv(all_data1_centile,'individual_centile_score.csv')
+
+
+```
+ 
+
+```{r,warning = FALSE, include = FALSE,echo=FALSE}
+library(ggplot2)
+library(ggpubr)
+
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+
+
+width1 = 4; height1=3
+setwd(savepath);
+
+individual_data<-read.csv('individual_raw_data.csv',header=TRUE,check.names=F);
+setwd(path[[8]])
+
+results<-readRDS('GMV_normative_model.rds');
+p2<-results$p2
+Female_p2<-results$Female_p2;Female_p2[,c(2,3,4,5,6)]<-Female_p2[,c(2,3,4,5,6)]/1000
+Male_p2<-results$Male_p2;Male_p2[,c(2,3,4,5,6)]<-Male_p2[,c(2,3,4,5,6)]/1000
+individual_data[,'GMV']<-individual_data[,'GMV']/1000
+
+f1<-ggplot()+
+  geom_line(data=Male_p2,aes(x=Age,y=median),color=c('#4FBBD8'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Male_p2,aes(x=Age,y=lower95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Male_p2,aes(x=Age,y=upper95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  
+  geom_line(data=Female_p2,aes(x=Age,y=median),color=c('#E84935'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Female_p2,aes(x=Age,y=lower95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Female_p2,aes(Age,y=upper95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  
+  #geom_line(data=p2,aes(Age,y=upper99CI/10000),color=c('#666666'),linewidth=1,linetype=c('dashed'))+
+  geom_point(aes(individual_data$Age,individual_data[,'GMV']),colour='darkred',size=2,stroke=5)+
+  labs(x='Age (years)',y=paste0(results$i,'(ml)'))+
+  # legend("topright",
+  #      legend=c('Male','Lower 95%CI','Upper 95%CI','Female','Lower 95%CI','Upper 95%CI'),
+  #      fill = c('#00CCFF','#00CCFF','#00CCFF','darkred','darkred','darkred'),
+  #      col = c('#00CCFF','#00CCFF','#00CCFF','darkred','darkred','darkred'),
+  #      title = "cyl") 
+  theme_bw()
+  #scale_x_log10()
+print(f1)
+setwd(savepath);
+ggsave(paste0("GMV.png"),width = width1, height = height1, dpi = 300)
+
+setwd(path[[8]])
+results<-readRDS('sGMV_normative_model.rds');
+p2<-results$p2
+Female_p2<-results$Female_p2;Female_p2[,c(2,3,4,5,6)]<-Female_p2[,c(2,3,4,5,6)]/1000
+Male_p2<-results$Male_p2;Male_p2[,c(2,3,4,5,6)]<-Male_p2[,c(2,3,4,5,6)]/1000
+individual_data[,'sGMV']<-individual_data[,'sGMV']/1000
+f2<-ggplot()+
+  geom_line(data=Male_p2,aes(x=Age,y=median),color=c('#4FBBD8'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Male_p2,aes(x=Age,y=lower95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Male_p2,aes(Age,y=upper95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  
+  geom_line(data=Female_p2,aes(x=Age,y=median),color=c('#E84935'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Female_p2,aes(x=Age,y=lower95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Female_p2,aes(Age,y=upper95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  
+  #geom_line(data=p2,aes(Age,y=upper99CI/10000),color=c('#666666'),linewidth=1,linetype=c('dashed'))+
+  geom_point(aes(individual_data$Age,individual_data[,'sGMV']),colour='darkred',size=2,stroke=5)+
+  labs(x='Age (years)',y=paste0(results$i,'(ml)'))+
+  theme_bw()
+  #scale_x_log10()
+
+print(f2)
+setwd(savepath);
+ggsave(paste0("sGMV.png"),width = width1, height = height1, dpi = 300)
+
+setwd(path[[8]])
+results<-readRDS('WMV_normative_model.rds');
+p2<-results$p2
+Female_p2<-results$Female_p2;Female_p2[,c(2,3,4,5,6)]<-Female_p2[,c(2,3,4,5,6)]/1000
+Male_p2<-results$Male_p2;Male_p2[,c(2,3,4,5,6)]<-Male_p2[,c(2,3,4,5,6)]/1000
+individual_data[,'WMV']<-individual_data[,'WMV']/1000
+f3<-ggplot()+
+  geom_line(data=Male_p2,aes(x=Age,y=median),color=c('#4FBBD8'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Male_p2,aes(x=Age,y=lower95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Male_p2,aes(Age,y=upper95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  
+  geom_line(data=Female_p2,aes(x=Age,y=median),color=c('#E84935'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Female_p2,aes(x=Age,y=lower95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Female_p2,aes(Age,y=upper95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  
+  #geom_line(data=p2,aes(Age,y=upper99CI/10000),color=c('#666666'),linewidth=1,linetype=c('dashed'))+
+  geom_point(aes(individual_data$Age,individual_data[,'WMV']),colour='darkred',size=2,stroke=5)+
+  labs(x='Age (years)',y=paste0(results$i,'(ml)'))+
+  theme_bw()
+  #scale_x_log10()
+
+print(f3)
+setwd(savepath);
+ggsave(paste0("WMV.png"),width = width1, height = height1, dpi = 300)
+
+setwd(path[[8]])
+results<-readRDS('Ventricles_normative_model.rds');
+p2<-results$p2
+Female_p2<-results$Female_p2;Female_p2[,c(2,3,4,5,6)]<-Female_p2[,c(2,3,4,5,6)]/1000
+Male_p2<-results$Male_p2;Male_p2[,c(2,3,4,5,6)]<-Male_p2[,c(2,3,4,5,6)]/1000
+individual_data[,'Ventricles']<-individual_data[,'Ventricles']/1000
+f4<-ggplot()+
+  geom_line(data=Male_p2,aes(x=Age,y=median),color=c('#4FBBD8'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Male_p2,aes(x=Age,y=lower95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Male_p2,aes(Age,y=upper95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  
+  geom_line(data=Female_p2,aes(x=Age,y=median),color=c('#E84935'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Female_p2,aes(x=Age,y=lower95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Female_p2,aes(Age,y=upper95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  
+  #geom_line(data=p2,aes(Age,y=upper99CI/10000),color=c('#666666'),linewidth=1,linetype=c('dashed'))+
+  geom_point(aes(individual_data$Age,individual_data[,'Ventricles']),colour='darkred',size=2,stroke=5)+
+  labs(x='Age (years)',y=paste0(results$i,'(ml)'))+
+  theme_bw()
+  #scale_x_log10()
+
+print(f4)
+setwd(savepath);
+ggsave(paste0("Ventricles.png"),width = width1, height = height1, dpi = 300)
+
+setwd(path[[8]])
+results<-readRDS('Cerebellum_normative_model.rds');
+p2<-results$p2
+Female_p2<-results$Female_p2;Female_p2[,c(2,3,4,5,6)]<-Female_p2[,c(2,3,4,5,6)]/1000
+Male_p2<-results$Male_p2;Male_p2[,c(2,3,4,5,6)]<-Male_p2[,c(2,3,4,5,6)]/1000
+individual_data[,'cerebellum_total']<-individual_data[,'cerebellum_total']/1000
+
+f5<-ggplot()+
+  geom_line(data=Male_p2,aes(x=Age,y=median),color=c('#4FBBD8'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Male_p2,aes(x=Age,y=lower95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Male_p2,aes(Age,y=upper95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  
+  geom_line(data=Female_p2,aes(x=Age,y=median),color=c('#E84935'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Female_p2,aes(x=Age,y=lower95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Female_p2,aes(Age,y=upper95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  
+  #geom_line(data=p2,aes(Age,y=upper99CI/10000),color=c('#666666'),linewidth=1,linetype=c('dashed'))+
+  geom_point(aes(individual_data$Age,individual_data[,'cerebellum_total']),colour='darkred',size=2,stroke=5)+
+  labs(x='Age (years)',y=paste0('Cerebellum','(ml)'))+
+  theme_bw()
+  #scale_x_log10()
+
+print(f5)
+setwd(savepath);
+ggsave(paste0("Cerebellum.png"),width = width1, height = height1, dpi = 300)
+
+setwd(path[[8]])
+results<-readRDS('BrainStem_normative_model.rds');
+p2<-results$p2
+Female_p2<-results$Female_p2;Female_p2[,c(2,3,4,5,6)]<-Female_p2[,c(2,3,4,5,6)]/1000
+Male_p2<-results$Male_p2;Male_p2[,c(2,3,4,5,6)]<-Male_p2[,c(2,3,4,5,6)]/1000
+individual_data[,'Brain.Stem']<-individual_data[,'Brain.Stem']/1000
+
+f6<-ggplot()+
+  geom_line(data=Male_p2,aes(x=Age,y=median),color=c('#4FBBD8'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Male_p2,aes(x=Age,y=lower95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Male_p2,aes(Age,y=upper95CI),color=c('#4FBBD8'),linewidth=1,linetype=c('dotted'))+
+  
+  geom_line(data=Female_p2,aes(x=Age,y=median),color=c('#E84935'),linewidth=2,linetype=c('solid'))+
+  #geom_line(data=p2,aes(x=Age,y=lower99CI/10000),color=c('red'),linewidth=1,linetype=c('dashed'))+
+  geom_line(data=Female_p2,aes(x=Age,y=lower95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  geom_line(data=Female_p2,aes(Age,y=upper95CI),color=c('#E84935'),linewidth=1,linetype=c('dotted'))+
+  
+  #geom_line(data=p2,aes(Age,y=upper99CI/10000),color=c('#666666'),linewidth=1,linetype=c('dashed'))+
+  geom_point(aes(individual_data$Age,individual_data[,'Brain.Stem']),colour='darkred',size=2,stroke=5)+
+  labs(x='Age (years)',y=paste0('Brainstem','(ml)'))+
+  theme_bw()
+  #scale_x_log10()
+print(f6)
+
+setwd(savepath);
+ggsave(paste0("BrainStem.png"),width = width1, height = height1, dpi = 300)
+
+
+```
+
+```{r warning = FALSE, include = TRUE,echo=FALSE, out.width="50%",fig.align='center',fig.show='hold',fig.cap=' '}
+library(knitr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+p1<-file.path(paste0(savepath,'/GMV.png'))
+p2<-file.path(paste0(savepath,'/sGMV.png'))
+p3<-file.path(paste0(savepath,'/WMV.png'))
+p4<-file.path(paste0(savepath,'/Ventricles.png'))
+
+p5<-file.path(paste0(savepath,'/Cerebellum.png'))
+p6<-file.path(paste0(savepath,'/BrainStem.png'))
+
+
+knitr::include_graphics(c(p1,p2))
+#knitr::include_graphics(c(p3,p4))
+#knitr::include_graphics(c(p5,p6))
+
+```
+
+```{r warning = FALSE, include = TRUE,echo=FALSE, out.width="50%",fig.align='center',fig.show='hold',fig.cap=' '}
+library(knitr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+p1<-file.path(paste0(savepath,'/WMV.png'))
+p2<-file.path(paste0(savepath,'/Ventricles.png'))
+
+#knitr::include_graphics(c(p1,p2))
+knitr::include_graphics(c(p1,p2))
+#knitr::include_graphics(c(p5,p6))
+
+```
+
+```{r warning = FALSE, include = TRUE,echo=FALSE, out.width="50%",fig.align='center',fig.show='hold',fig.cap=' '}
+library(knitr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+p1<-file.path(paste0(savepath,'/Cerebellum.png'))
+p2<-file.path(paste0(savepath,'/BrainStem.png'))
+
+
+#knitr::include_graphics(c(p1,p2))
+#knitr::include_graphics(c(p3,p4))
+knitr::include_graphics(c(p1,p2))
+
+```
+
+\newpage
+## Deviation of local features:
+#### lightblue=supernormal,darkred=abnormal
+
+```{r, warning = FALSE, include = FALSE,echo=FALSE}
+library(ggplot2)
+library(ggpubr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+width1 = 4; height1=3
+setwd(savepath);
+individual_data<-read.csv('individual_centile_score.csv',header=TRUE,check.names=F);
+del_str='_thickness'
+del_str='_area'
+
+
+
+library(ggseg)
+
+#for cortical volume
+del_str='_volume'
+feature_seg<-colnames(individual_data)[31:98];
+
+library(stringr)
+feature_seg<-str_remove_all(string = feature_seg,pattern = del_str)
+value=individual_data[1,31:98]
+value[,is.na(value[1,])]<-0
+
+seg_data=data.frame(label=feature_seg,
+                    Centile=as.numeric(value))
+
+library(ggsci)
+
+p<-ggplot(seg_data)+
+  geom_brain(atlas=dk,
+             size = 0.1,
+             position=position_brain(hemi ~ side),
+             #hemi=hemis,
+             mapping = aes(fill = Centile))+
+  theme_void()+
+  #scale_fill_gradient(limits=c(4.5,max(seg_data$Peak_age)),low='grey',high='#990000')
+   scale_fill_gradient2(limits=c(0,1),low='#E84935',midpoint = 0.5, high='#4FBBD8')
+p
+ggsave(paste0("cortical_volume.png"),width = width1, height = height1, dpi = 300)
+
+
+
+feature_seg<-colnames(individual_data)[c(13:29)];
+feature_seg<-gsub('.','-',feature_seg,fixed = T)
+#feature_seg<-str_remove_all(string = feature_seg,pattern = del_str)
+value=individual_data[1,c(13:29)]
+value[,is.na(value[1,])]<-0
+feature_seg[feature_seg=='Left-Thalamus']<-c("Left-Thalamus-Proper")
+feature_seg[feature_seg=='Right-Thalamus']<-c("Right-Thalamus-Proper")
+seg_data=data.frame(label=feature_seg,
+                    Centile=as.numeric(value))
+library(ggsci)
+
+p<-ggplot(seg_data)+
+  geom_brain(atlas=aseg,
+             size = 0.1,
+             side='coronal',
+             mapping = aes(fill = Centile))+
+  theme_void()+
+  scale_fill_gradient2(limits=c(0,1),low='#E84935',midpoint = 0.5, high='#4FBBD8')
+  
+print(p)
+ggsave(paste0("subcortical_volume.png"),width = width1, height = height1, dpi = 300)
+
+```
+
+
+```{r warning = FALSE, include = TRUE,echo=FALSE, out.width="50%",fig.align='center',fig.show='hold',fig.cap=' '}
+library(knitr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+p1<-file.path(paste0(savepath,'/subcortical_volume.png'))
+p2<-file.path(paste0(savepath,'/cortical_volume.png'))
+
+
+#knitr::include_graphics(c(p1,p2))
+#knitr::include_graphics(c(p3,p4))
+knitr::include_graphics(c(p1,p2))
+
+```
+\newpage
+## Summary of global and local features:
+#### lightblue=supernormal,darkred=abnormal
+```{r, warning = FALSE, include = FALSE,echo=FALSE}
+library(ggplot2)
+library(ggpubr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+width1 = 4; height1=3
+setwd(savepath);
+individual_data<-read.csv('individual_raw_data.csv',header=TRUE,check.names=F);
+individual_score<-read.csv('individual_centile_score.csv',header=TRUE,check.names=F);
+
+del_str='_thickness'
+del_str='_area'
+del_str='_volume'
+
+sub_var<-colnames(individual_data)[c(6:9,17,30,13:16,18:29)];
+table_sub<-cbind(t(individual_data[,sub_var]/1000),t(individual_score[,sub_var]))
+colnames(table_sub)<-c('Volume(ml)','centile')
+
+sub_var_volume<-colnames(individual_data)[c(31:98)];
+
+sub_var_thickness<-colnames(individual_data)[c(99:166)];
+
+sub_var_area<-colnames(individual_data)[c(167:234)];
+
+table_cor<-cbind(t(individual_data[,sub_var_volume]/1000),
+                 t(individual_score[,sub_var_volume]),
+                 t(individual_data[,sub_var_thickness]),
+                 t(individual_score[,sub_var_thickness]),
+                 t(individual_data[,sub_var_area]/100),
+                 t(individual_score[,sub_var_area])) 
+
+colnames(table_cor)<-c('Volume.ml','Volume.centile',
+                       'Thickness.mm','Thickness.centile',
+                       'Surface.area.cm2','Area.centile')
+library("htmltools")
+library("webshot") 
+
+export_formattable <- function(f, file, width = "100%", height = NULL, 
+                               background = "white", delay = 0.2)
+    {
+      w <- as.htmlwidget(f, width = width, height = height)
+      path <- html_print(w, background = background, viewer = NULL)
+      url <- paste0("file:///", gsub("\\\\", "/", normalizePath(path)))
+      webshot(url,
+              file = file,
+              selector = ".formattable_widget",
+              delay = delay)
+}
+
+
+library(stringr)
+rownames(table_cor)<-str_remove_all(string = rownames(table_cor),pattern = del_str)
+rownames(table_cor)<-gsub('_','.',rownames(table_cor),fixed = T)
+
+table_cor<-round(table_cor,2)
+table_sub<-round(table_sub,2)
+
+rownames(table_sub)[rownames(table_sub)=="Ventricles"]<-'CSF'
+rownames(table_sub)[rownames(table_sub)=="Brain.Stem"]<-'Brainstem'
+rownames(table_sub)[rownames(table_sub)=="cerebellum_total"]<-'Cerebellum'
+# rownames(table_sub)[rownames(table_sub)=="mean_thickness"]<-'Cortical.thickness'
+# rownames(table_sub)[rownames(table_sub)=="total_surface_arrea"]<-'Surface.area'
+rownames(table_sub)<-gsub('Right','rh',rownames(table_sub))
+rownames(table_sub)<-gsub('Left','lh',rownames(table_sub))
+
+library(formattable)
+#formattable(table_sub,list(centile=color_bar("pink",proportion)))
+table_sub<-data.frame(table_sub)
+
+p<-formattable(table_sub, 
+list(centile = formatter("span",   
+style = x ~ ifelse(x < 0.05, 
+                   style(display = "block",   
+                     color = "white",   
+                         font.weight = "bold",   
+                      "border-radius" = "10px",       
+                  "padding-right" = "4px",     
+                   "background-color" = "#E84935"  
+                        ),
+                   ifelse(x>=0.95,     
+                       style(display = "block",   
+                     color = "white",   
+                         font.weight = "bold",   
+                      "border-radius" = "10px",      
+                  "padding-right" = "4px",     
+                   "background-color" = "#4FBBD8" 
+                        ),
+                          "color:orange")
+                    ))))
+
+export_formattable(p,"global_summary.png")
+
+table_cor<-data.frame(table_cor)
+p<-formattable(table_cor, 
+list(Volume.centile = formatter("span",   
+style = x ~ ifelse(x < 0.05,#条件1   
+                   style(display = "block",   
+                     color = "white",   
+                         font.weight = "bold",   
+                      "border-radius" = "10px",       
+                  "padding-right" = "4px",      
+                   "background-color" = "#E84935"    
+                        ),
+                   ifelse(x>=0.95,      
+                       style(display = "block",   
+                     color = "white",   
+                         font.weight = "bold",   
+                      "border-radius" = "10px",        
+                  "padding-right" = "4px",     
+                   "background-color" = "#4FBBD8"   
+                        ),  
+                          "color:orange") 
+                    )),
+Thickness.centile  = formatter("span",   
+style = x ~ ifelse(x < 0.05,   
+                   style(display = "block",   
+                     color = "white",   
+                         font.weight = "bold",   
+                      "border-radius" = "10px",      
+                  "padding-right" = "4px",      
+                   "background-color" = "#E84935"   
+                        ),
+                   ifelse(x>=0.95,     
+                       style(display = "block",   
+                     color = "white",   
+                         font.weight = "bold",   
+                      "border-radius" = "10px",      
+                  "padding-right" = "4px",      
+                   "background-color" = "#4FBBD8"    
+                        ),   
+                          "color:orange") 
+                    )),
+Area.centile  = formatter("span",   
+style = x ~ ifelse(x < 0.05, 
+                   style(display = "block",   
+                     color = "white",   
+                         font.weight = "bold",   
+                      "border-radius" = "10px",       
+                  "padding-right" = "4px",     
+                   "background-color" = "#E84935"    
+                        ), 
+                   ifelse(x>=0.95,      
+                       style(display = "block",   
+                     color = "white",   
+                         font.weight = "bold",   
+                      "border-radius" = "10px",        
+                  "padding-right" = "4px",      
+                   "background-color" = "#4FBBD8"   
+                        ),  
+                          "color:orange")  
+                    ))))
+
+export_formattable(p,"local_summary.png")
+
+
+```
+
+
+```{r warning = FALSE, include = TRUE,echo=FALSE, out.width="100%",fig.align='left',fig.show='hold',fig.cap=paste0('Note:lh,left hemisphere;rh:right hemisphere')}
+library(knitr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+p1<-file.path(paste0(savepath,'/global_summary.png'))
+p2<-file.path(paste0(savepath,'/local_summary.png'))
+knitr::include_graphics(c(p1))
+
+```
+\newpage
+
+```{r warning = FALSE, include = TRUE,echo=FALSE, out.width="100%",fig.align='left',fig.show='hold',fig.cap=paste0('Note:lh,left hemisphere;rh:right hemisphere')}
+library(knitr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+p1<-file.path(paste0(savepath,'/global_summary.png'))
+p2<-file.path(paste0(savepath,'/local_summary.png'))
+knitr::include_graphics(c(p2))
+
+```
+
+\newpage
+## Disease propensity score:
+```{r, warning = FALSE, include = FALSE,echo=FALSE}
+library(ggplot2)
+library(ggpubr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+width1 = 4; height1=3
+setwd(savepath);
+individual_data<-read.csv('individual_centile_score.csv',header=TRUE,check.names=F);
+
+
+#tem_data<-individual_data[1,individual_data[1,]<0.05]
+
+
+```
+
+```{r, warning = FALSE, include = FALSE,echo=FALSE}
+rm (list = ls ())
+library(ggplot2)
+library(ggpubr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report' # Create and determine the directory where you would save the results  
+
+width1 = 4; height1=3
+setwd(savepath);
+individual_data<-read.csv('individual_centile_score.csv',header=TRUE,check.names=F);
+
+if(individual_data$Sex=='Male')
+{
+individual_data[1,'Sex']<-1
+}
+if(individual_data$Sex=='Female')
+{
+individual_data[1,'Sex']<-0
+}
+individual_data$Sex<-as.numeric(individual_data$Sex)
+
+start_col=6
+tem_colnames<-colnames(individual_data)[start_col:dim(individual_data)[2]];
+tem_colnames<-gsub('-','.',tem_colnames,fixed = T);
+#tem_colnames<-gsub('_','.',tem_colnames,fixed = T);
+
+
+# tem_colnames[tem_colnames=='total.surface.arrea']<-'total_surface_arrea';
+# tem_colnames[tem_colnames=='Ventricles']<-'CSF';
+# tem_colnames[tem_colnames=='cerebellum.total']<-'cerebellum_total';
+# tem_colnames[tem_colnames=='Brain.Stem']<-'Brainstem';
+# tem_colnames[tem_colnames=='mean.thickness']<-'mean_thickness';
+
+tem_colnames[tem_colnames=='total.surface.arrea']<-'Surface.area';
+tem_colnames[tem_colnames=='Ventricles']<-'CSF';
+tem_colnames[tem_colnames=='cerebellum.total']<-'Cerebellum';
+tem_colnames[tem_colnames=='Brain.Stem']<-'Brainstem';
+tem_colnames[tem_colnames=='mean.thickness']<-'Cortical.thickness';
+
+
+for(i_sub in 1:length(tem_colnames))
+{
+  # if(str_detect(re_feature,'volume')|str_detect(re_feature,'area')|str_detect(re_feature,'thickness'))
+  # {next}
+
+  if(str_detect(tem_colnames[i_sub],'Right'))
+  {
+
+    tem_colnames[i_sub]<-paste0(tem_colnames[i_sub],'.volume');
+    tem_colnames[i_sub]<-gsub('Right','rh',tem_colnames[i_sub]);
+    tem_colnames[i_sub]<-tolower(tem_colnames[i_sub])
+  }
+
+  if(str_detect(tem_colnames[i_sub],'Left'))
+  {
+
+    tem_colnames[i_sub]<-paste0(tem_colnames[i_sub],'.volume');
+    tem_colnames[i_sub]<-gsub('Left','lh',tem_colnames[i_sub]);
+    tem_colnames[i_sub]<-tolower(tem_colnames[i_sub])
+  }
+
+}
+
+colnames(individual_data)[start_col:dim(individual_data)[2]]<-tem_colnames
+
+individual_data<-data.frame(individual_data)
+disease<-c('MCI','AD','PD','CSVD','MS','NMOSD')
+#model_path='E:/Lifespan_freesurfer_results/Results/Step3_disease_diagnosis/V7_DK/multivariate_analysis/global_and_local_feature_all_for_ref_group_sample_no_site_match'
+library(e1071)
+#load the DPS model one-by-one
+predict_value_new<-NULL
+setwd(model_path);
+num=0;
+for(i_dis in disease)
+{
+  model_cross<-readRDS(paste0(model_path,'/',i_dis,'_model_cross_validation.rds'))
+  
+  for(i_fold in c(1:10))
+  {
+    num=num+1;
+    cur_model<-model_cross[[paste0('svmRadial_',i_dis,'_Model_fold_',i_fold)]]
+   
+    
+    
+    prediction<-predict(cur_model,newdata=individual_data,probability = TRUE);
+
+    probabilities <- data.frame(attr(prediction, "probabilities"))
+    prediction<-probabilities$X1
+    prediction<-data.frame(prediction)
+    rownames(prediction)<-rownames(individual_data)
+    
+    if(num==1){predict_value_new<-prediction}
+    if(num>1){predict_value_new<-cbind(predict_value_new,prediction)}
+    
+    colnames(predict_value_new)[dim(predict_value_new)[2]]<-c(paste0(i_dis,i_fold));
+    
+  }
+  
+  predict_value_new[,i_dis]<-rowMeans(predict_value_new[,paste0(i_dis,c(1:10))]);
+  
+
+}
+
+saveRDS(predict_value_new,'predictive_values.rds');
+
+
+
+Pre_MCI<-predict_value_new$MCI
+Pre_AD<-predict_value_new$AD
+Pre_PD<-predict_value_new$PD
+Pre_CSVD<-predict_value_new$CSVD
+Pre_MS<-predict_value_new$MS
+Pre_NMOSD<-predict_value_new$NMOSD
+
+
+library(fmsb)
+  
+  rad_data0<-data.frame(matrix(NA,3,6));
+  rad_data0[1,] <- data.frame(t(c(1,1,1,1,1,1)));
+  rad_data0[2,] <- data.frame(t(c(0,0,0,0,0,0)));
+  rad_data0[3,] <- data.frame(t(c(Pre_MCI,Pre_AD,Pre_PD,Pre_CSVD,Pre_MS,Pre_NMOSD)));
+  colnames(rad_data0)<-c('MCI','AD','PD','CSVD','MS','NMOSD')
+  rownames(rad_data0)<-c('Max','Min','value')
+  
+
+setwd(savepath);
+  png(filename = paste0("disease_risk.png"),
+    width = 1500,
+    height = 1500,
+    units = "px",
+    bg = "white",
+    res = 300)
+
+  
+ p<-radarchart(rad_data0,
+             axistype = 1,
+             seg=2,
+             centerzero=TRUE,
+             # Customize the polygon
+             pcol = "#2E86C1", 
+             pfcol = scales::alpha("#3498DB", 0.5), 
+             plwd = 2, plty = 1,
+             # Customize the grid
+             cglcol = "#AAB7B8", cglty = 1, 
+             cglwd = 0.8,
+             # Customize the axis
+             axislabcol = "#34495E",
+             # Variable labels
+             vlcex = 1.1, palcex = 1,
+             vlabels = colnames(rad_data0),
+             caxislabels = c(0,0.5, 
+                            0.5*2))
+print(p)
+dev.off()
+
+write.csv(rad_data0,'Disease_propensity_score.csv')
+#ggsave(paste0("disease_risk.png"),width = width1, height = height1, dpi = 300)
+#dev.off()
+
+```
+
+```{r warning = FALSE, include = TRUE,echo=FALSE, out.width="80%",fig.align='center',fig.show='hold',fig.cap=' '}
+library(knitr)
+datapath='E:/Lifespan_freesurfer_results/Github/Source-codes/'#Change the directory where you save the Source-codes 
+datafile ='E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/MR_measures.xlsx' #Change the directory where you save the clinical variables  
+clinicalfile<-'E:/Lifespan_freesurfer_results/Github/Datasets/Dataset-individual/Clinical_vars.csv'#Change the directory where you save the MR measures  
+feature_path0='E:/Lifespan_freesurfer_results/Github/Models/GAMLSS/DK/' #Chnage the path you have saved your normative models in "Normative-model-fit.R"
+model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the directory where you save the DPS models
+savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report';# Create and determine the directory where you would save the results  
+p1<-file.path(paste0(savepath,'/disease_risk.png'))
+
+knitr::include_graphics(c(p1))
+
+```
+
+
+Note that this quantitative report is just for clinical research currently.

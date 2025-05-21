@@ -1,0 +1,4 @@
+Freesufer_Path1,Freesufer_Path2,Freesufer_Path3,Clinical_Path1,Clinical_Path2,Clinical_Path3,Age,Sex,Diagnosis,Scanner,Age_y,Age_m,Age_d,Filed_strength,Manufacturer,MOCA,MMSE,Education_years,City,Province,Country,Center
+Case1,Case1,Case1,Case1,Case1,Case1,59,Female,HC,Siemens_Prisma,59,708,21535,T30,GE,22,28,9,Beijing,Beijing,China,Tiantan
+Case2,Case2,Case2,Case2,Case2,Case2,61,Male,HC,GE_Premier,61,732,22265,T30,GE,21,29,16,Beijing,Beijing,China,Youan
+Individual,Individual,Individual,Individual,Individual,Individual,64,Female,Unkonwn,GE_Premier,64,768,23360,T30,GE,3,5,12,Beijing,Beijing,China,Tiantan
