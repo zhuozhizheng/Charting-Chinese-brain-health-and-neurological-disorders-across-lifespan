@@ -191,8 +191,8 @@ data2[,'sigmafix']<-sigmafix
 data2 <- na.omit(data2)
 
 con=gamlss.control()
-m2_cal<-gamlss(formula=feature~offset(mufix)+random(Site_ZZZ),
-               sigma.formula = feature~offset(sigmafix)+random(Site_ZZZ),
+m2_cal<-gamlss(formula=feature~offset(mufix)+random(Site_ZZZ)-1,
+               sigma.formula = feature~offset(sigmafix)+random(Site_ZZZ)-1,
            control=con,
            family = GG(mu.link='log',sigma.link = 'log',nu.link = 'identity'),
            data=data2)
