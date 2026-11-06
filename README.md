@@ -171,7 +171,15 @@ model_path='E:/Lifespan_freesurfer_results/Github/Models/DPS' #Change the direct
 savepath='E:/Lifespan_freesurfer_results/Github/Test_results/case_report'; #Create and determine the directory where you would save the results   
 ###
 
-5.License(#License)
+4.10. Stratified normative reference construction
+
+For stratified normative reference construction, please refer to the scripts: Stratified_norms_Step1_HC_cluster.R and Stratified_norms_Step2_GAMLSS_fit_subtypes.R.
+
+5. Brain Health Report agent
+
+We have developed a Brain Health Report agent for the clinical pipeline, with DICOM images from the Image Archiving System as input. The README files in brain-health-agent provide details on how to set up and run the agent.
+
+6.License(#License)
 
 MIT License
 Copyright (c) [2025] [Version V1.0]
