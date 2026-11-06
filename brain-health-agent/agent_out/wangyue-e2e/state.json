@@ -1,0 +1,20 @@
+{
+ "run_id": "wangyue-e2e",
+ "root": "/mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2",
+ "created": 1788495360.3517778,
+ "dry_run": false,
+ "skipped": [],
+ "subjects": [
+  {
+   "subject": "WANGYUE_20260329013_172047",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "failed",
+   "dir": "/home/ps/Desktop/test/agent_out/wangyue-e2e/WANGYUE_20260329013_172047",
+   "started": 1788495360.3525054,
+   "pipeline_log": "/home/ps/Desktop/test/agent_out/wangyue-e2e/WANGYUE_20260329013_172047/pipeline.log",
+   "pipeline_rc": -15,
+   "error": "pipeline exit -15",
+   "finished": 1788495516.8694584
+  }
+ ]
+}

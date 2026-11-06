@@ -1,0 +1,289 @@
+{
+ "run_id": "20260904-140354-45eb7e",
+ "root": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111",
+ "created": 1788501834.1006663,
+ "dry_run": true,
+ "skipped": [],
+ "subjects": [
+  {
+   "subject": "BAILU_2026030821_150602",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/BAILU_2026030821_150602/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "BAOTIANQI_2025121224_193205",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/BAOTIANQI_2025121224_193205/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "CAIGUOYU_20255121426_210348",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/CAIGUOYU_20255121426_210348/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "CHENBIAO_2026011824_171110",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/CHENBIAO_2026011824_171110/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "CHENDONGLU_2026013022_165859",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/CHENDONGLU_2026013022_165859/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "CHENLABA_2026020855_195434",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/CHENLABA_2026020855_195434/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "CHENLIYING_2026010923_181917",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/CHENLIYING_2026010923_181917/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "CHENXIAOPING_2026012322_161144",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/CHENXIAOPING_2026012322_161144/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "CHENYILE_2025113021_151116",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/CHENYILE_2025113021_151116/3-t1_3D_gre_fsp_sag_iso_ACS_401",
+   "status": "planned"
+  },
+  {
+   "subject": "DAIYONGQING_2025122822_161320",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/DAIYONGQING_2025122822_161320/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "DONGHUA_20260329012_161130",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/DONGHUA_20260329012_161130/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "DONGXIANCHANG_2026012321_162756",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/DONGXIANCHANG_2026012321_162756/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "DUXIAOZHOU_2025121921_155651",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/DUXIAOZHOU_2025121921_155651/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "FANRUYUN_2025121923_182742",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/FANRUYUN_2025121923_182742/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "GAOJUNHUI_2026032205_193004",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/GAOJUNHUI_2026032205_193004/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "GAOTIANYU_2026020136_201939",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/GAOTIANYU_2026020136_201939/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "GONGCHANGHAO_2025122121_150733",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/GONGCHANGHAO_2025122121_150733/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "GUJIANGYI_2026032204_183157",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/GUJIANGYI_2026032204_183157/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "GUOJINDAN_2025120722_162613",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/GUOJINDAN_2025120722_162613/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "GUOSICHENG_2025113022_161607",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/GUOSICHENG_2025113022_161607/3-t1_3D_gre_fsp_sag_iso_ACS_401",
+   "status": "planned"
+  },
+  {
+   "subject": "HANDI_2026012503_153954",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/HANDI_2026012503_153954/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "HANRUI_2026011623_182541",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/HANRUI_2026011623_182541/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "HAOZHONGYUAN_2025121421_160615",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/HAOZHONGYUAN_2025121421_160615/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "HOU_YU_20260315-181810-2519_181952",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/HOU YU_20260315-181810-2519_181952/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "HUANGJUNCAN_2025122624_185959",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/HUANGJUNCAN_2025122624_185959/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "HUANGSI_2026012505_194208",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/HUANGSI_2026012505_194208/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "JIANGYAN_2026012323_174719",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/JIANGYAN_2026012323_174719/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "JINHUIJING_2026020844_184956",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/JINHUIJING_2026020844_184956/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "JINHUILIN_202602080013_174108",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/JINHUILIN_202602080013_174108/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "JINYING_2026030621_154332",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/JINYING_2026030621_154332/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LEYANQUN_2025120725_200611",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LEYANQUN_2025120725_200611/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIHUI_2026032721_152204",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIHUI_2026032721_152204/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIJIANG_2025122123_170117",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIJIANG_2025122123_170117/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIJIA_2026030624_190923",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIJIA_2026030624_190923/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIJING_2025121422_170404",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIJING_2025121422_170404/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIJUN_2025032202_161551",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIJUN_2025032202_161551/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LILIN_2025122824_181108",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LILIN_2025122824_181108/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LILI_2026020622_165350",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LILI_2026020622_165350/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LINBINGJIE_2026031323_193042",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LINBINGJIE_2026031323_193042/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIRUPING_2026011624_192520",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIRUPING_2026011624_192520/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LISHAOSHUAI_2026011827_203153",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LISHAOSHUAI_2026011827_203153/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIUGUOZHONG_2026032021_154105",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIUGUOZHONG_2026032021_154105/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIUJIANJUN_2026020134_182648",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIUJIANJUN_2026020134_182648/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIUJINPENG_2025122825_191420",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIUJINPENG_2025122825_191420/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIUSHUAI_2026012501_173347",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIUSHUAI_2026012501_173347/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIUWENDI_2026030823_173903",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIUWENDI_2026030823_173903/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIUYUWEI_2026030622_164239",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIUYUWEI_2026030622_164239/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIUYU_2026030623_180934",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIUYU_2026030623_180934/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIWENKE_2026032023_175628",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIWENKE_2026032023_175628/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIXUAN_2026031501_150706",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIXUAN_2026031501_150706/3-t1_3D_gre_fsp_sag_iso_ACS_401",
+   "status": "planned"
+  },
+  {
+   "subject": "LIZHANJIA_2026020623_181624",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIZHANJIA_2026020623_181624/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LIZHIXIN_2026020131_151004",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LIZHIXIN_2026020131_151004/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LUOYUQI_2026030822_163810",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LUOYUQI_2026030822_163810/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LUQINGHAN_20230329014_182935",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LUQINGHAN_20230329014_182935/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "LV_YING_2026031502_160908",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/LV YING_2026031502_160908/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  },
+  {
+   "subject": "MADAN_2026011825_182059",
+   "series": "/mnt/sda/zzz/pipeline_brain_health/test/zhao_jia_wen_ZJW_NC2025_MR2_111/MADAN_2026011825_182059/3-t1_3D_gre_fsp_sag_iso_ACS_301",
+   "status": "planned"
+  }
+ ]
+}

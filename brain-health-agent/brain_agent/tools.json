@@ -1,0 +1,58 @@
+{
+  "openapi": "3.1.0",
+  "info": {"title": "brain-agent", "version": "0.1.0"},
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "brain_agent_run",
+        "description": "Scan a folder for DICOM series, run the FreeSurfer brain-health pipeline per subject and generate the population-normative and subtype-specific HTML reports. Returns a run_id; poll brain_agent_status for progress.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "root": {"type": "string", "description": "Absolute path of the folder to process"},
+            "subjects": {"type": "array", "items": {"type": "string"}, "description": "Optional subset of subject names"},
+            "dry_run": {"type": "boolean", "description": "Only discover and plan, do not run the pipeline"}
+          },
+          "required": ["root"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "brain_agent_status",
+        "description": "Return the state of a run: per-subject status (planned/running/done/failed/blocked), logs and report paths.",
+        "parameters": {
+          "type": "object",
+          "properties": {"run_id": {"type": "string"}},
+          "required": ["run_id"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "brain_agent_list_runs",
+        "description": "List all known runs with per-run subject/done/failed counts.",
+        "parameters": {"type": "object", "properties": {}}
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "brain_agent_report_url",
+        "description": "Return the HTTP URL of a generated HTML report for a subject inside a run.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "run_id": {"type": "string"},
+            "subject": {"type": "string"},
+            "report": {"enum": ["population-normative", "subtype-specific"]}
+          },
+          "required": ["run_id", "subject", "report"]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "conda_sh": "/home/ps/anaconda3/etc/profile.d/conda.sh",
+  "conda_env": "py38",
+  "pipeline_script": "/mnt/sda/zzz/pipeline_brain_health/python_lh/freesurf_luhao.py",
+  "scratch_dir": "/mnt/sda/zzz/pipeline_brain_health/tem_data",
+  "fs_out_dir": "/mnt/sda/zzz/pipeline_brain_health/tem_data/tem_freesurfer_outputs",
+  "out_root": "/home/ps/Desktop/test/brain-health-agent/agent_out",
+  "build_script": "/home/ps/Desktop/test/brain-health-agent/report_builder/build_reports.py",
+  "python_bin": "/usr/bin/python3"
+}

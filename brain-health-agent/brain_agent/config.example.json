@@ -1,0 +1,10 @@
+{
+  "conda_sh": "~/anaconda3/etc/profile.d/conda.sh",
+  "conda_env": "py38",
+  "pipeline_script": "/path/to/pipeline/python_lh/freesurf_luhao.py",
+  "scratch_dir": "/path/to/pipeline/tem_data",
+  "fs_out_dir": "/path/to/pipeline/tem_data/tem_freesurfer_outputs",
+  "out_root": "",
+  "build_script": "",
+  "python_bin": "/usr/bin/python3"
+}

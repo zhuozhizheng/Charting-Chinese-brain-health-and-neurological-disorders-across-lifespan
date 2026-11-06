@@ -1,0 +1,23 @@
+2026-09-04 12:16:03,349 - INFO - === 流程开始 ===
+2026-09-04 12:16:03,350 - INFO - 命令行参数: input=/mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301, out_start_freesurfer=/mnt/sda/zzz/pipeline_brain_health/tem_data/tem_freesurfer_outputs, out_csv=/mnt/sda/zzz/pipeline_brain_health/tem_data
+2026-09-04 12:16:03,350 - INFO - 开始处理路径: /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301
+2026-09-04 12:16:03,350 - INFO - 输出路径 - freesurfer: /mnt/sda/zzz/pipeline_brain_health/tem_data/tem_freesurfer_outputs, CSV: /mnt/sda/zzz/pipeline_brain_health/tem_data
+2026-09-04 12:16:03,350 - INFO - 输入是目录
+2026-09-04 12:16:03,350 - INFO - 设置CSV路径: /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/T1.csv
+2026-09-04 12:16:03,350 - INFO - 开始处理DICOM文件夹: /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301
+2026-09-04 12:16:03,350 - INFO - 从 /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301/00000141.dcm 提取DICOM信息到 /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/T1.csv
+2026-09-04 12:16:03,395 - INFO - DICOM信息成功保存到 /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/T1.csv
+2026-09-04 12:16:03,395 - INFO - 开始DICOM到NIfTI转换: /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301 -> /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub
+2026-09-04 12:16:07,904 - INFO - 转换成功: T1.nii.gz
+2026-09-04 12:16:07,904 - INFO - DICOM转NIfTI耗时: 4.55秒
+2026-09-04 12:16:07,904 - INFO - 文件 /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/T1.nii.gz 已经过freesurfer分割
+2026-09-04 12:16:07,904 - INFO - 复制CSV文件: /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/T1.csv -> /mnt/sda/zzz/pipeline_brain_health/tem_data
+2026-09-04 12:16:07,904 - INFO - 复制文件: /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/T1.csv -> /mnt/sda/zzz/pipeline_brain_health/tem_data/T1.csv
+2026-09-04 12:16:07,904 - INFO - 文件复制成功
+2026-09-04 12:16:07,904 - INFO - 复制freesurfer结果: /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/stats -> /mnt/sda/zzz/pipeline_brain_health/tem_data/tem_freesurfer_outputs
+2026-09-04 12:16:07,904 - INFO - 复制目录: /mnt/sda/zzz/pipeline_brain_health/test/ZJW_HUADA_MR2/WANGYUE_20260329013_172047/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/3-t1_3D_gre_fsp_sag_iso_ACS_301_sub/stats -> /mnt/sda/zzz/pipeline_brain_health/tem_data/tem_freesurfer_outputs/stats
+2026-09-04 12:16:07,904 - INFO - 删除已存在的目标目录: /mnt/sda/zzz/pipeline_brain_health/tem_data/tem_freesurfer_outputs/stats
+2026-09-04 12:16:08,072 - INFO - 目录复制成功
+2026-09-04 12:16:08,072 - INFO - 调用R脚本
+2026-09-04 12:16:08,072 - INFO - 执行Rmd脚本: Rscript -e rmarkdown::render('/mnt/sda/zzz/pipeline_brain_health/codes/Individualized-brain-health-report.Rmd')
+2026-09-04 12:16:08,072 - INFO - 执行R脚本: Rscript /mnt/sda/zzz/pipeline_brain_health/stratified_normative_models/Results6-part1-indivilized_bain_health_report.R
